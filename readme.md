@@ -22,7 +22,7 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 	- [4.1 Distribusi Data Write \& Read (Load Balance)](#41-distribusi-data-write--read-load-balance)
 	- [4.2  Auto Fail Over](#42--auto-fail-over)
 	- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic)
-		- [4.3  Cara Setting](#43--cara-setting)
+		- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic-1)
 - [5. Distribution Data Skema 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-skema-2-node--2-server--2-share--1-replication)
 	- [5.1 Distribusi Data Write \& Read (Load Balance)](#51-distribusi-data-write--read-load-balance)
 	- [5.2  Auto Fail Over](#52--auto-fail-over)
@@ -111,7 +111,7 @@ Apabila node storage sudah di perbaiki, maka storage 1 akan menjadi replikasi da
 ![Screen Shoot](./ss/skema-2-node-1-share-1-replication.jpg)
 
  
-#### 4.3  Cara Setting 
+#### 4.3  Cara Setting Index Shard dan Replication di Elastic
 
 Untuk membuat index dengan 1 shard dan 1 replica:
 ```
