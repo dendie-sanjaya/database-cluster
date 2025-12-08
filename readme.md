@@ -1,3 +1,5 @@
+# Database Cluster
+
 Database clustering is a technique to group several database servers into one unit that works together to improve availability, scalability, and reliability. With clustering, data can be distributed and replicated automatically between nodes, so if one node fails, other nodes can still serve requests without interruption.
 
 Sharding and Replication are two fundamental pillars in modern distributed database architecture that complement each other to achieve high scalability and data availability.
@@ -12,28 +14,29 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 
 ## Table of Content
 
-- [Table of Content](#table-of-content)
-- [1. Cara deployment menggunakan docker-compose](#1-cara-deployment-menggunakan-docker-compose)
-- [2. Aristekur Elastic Cluster](#2-aristekur-elastic-cluster)
-	- [2.1. Kibana \& Apps (Layer Pengguna)](#21-kibana--apps-layer-pengguna)
-	- [2.2. HAProxy (Load Balancer)](#22-haproxy-load-balancer)
-	- [2.3. Elastic Clustering (Core Layer)](#23-elastic-clustering-core-layer)
-	- [2.4. Storage 1 \& Storage 2 (Data Layer)](#24-storage-1--storage-2-data-layer)
-- [3. Level Penerapan Sharding](#3-level-penerapan-sharding)
-- [4. Distribution Data Skema 2 Node / 2 Server  (1 Share \& 1 Replication)](#4-distribution-data-skema-2-node--2-server--1-share--1-replication)
-	- [4.1 Distribusi Data Write \& Read (Load Balance)](#41-distribusi-data-write--read-load-balance)
-	- [4.2  Auto Fail Over](#42--auto-fail-over)
-	- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic)
-- [5. Distribution Data Skema 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-skema-2-node--2-server--2-share--1-replication)
-	- [5.1 Distribusi Data Write \& Read (Load Balance)](#51-distribusi-data-write--read-load-balance)
-	- [5.2  Auto Fail Over](#52--auto-fail-over)
-	- [5.3  Skema After Recover](#53--skema-after-recover)
-	- [5.4 Cara Setting Index Shard dan Replication di Elastic](#54-cara-setting-index-shard-dan-replication-di-elastic)
-	- [5.5  Cara Reroute](#55--cara-reroute)
-- [6. Distribution Data Skema 3 Node / 3 Server  (3 Share \& 1 Replication)](#6-distribution-data-skema-3-node--3-server--3-share--1-replication)
-- [7. Cek setting shard dan replica pada index:](#7-cek-setting-shard-dan-replica-pada-index)
-- [8. Cek Distribusi](#8-cek-distribusi)
-- [9. Penting tidak bisa mengubah jumlah shard](#9-penting-tidak-bisa-mengubah-jumlah-shard)
+- [Database Cluster](#database-cluster)
+	- [Table of Content](#table-of-content)
+	- [1. Cara deployment menggunakan docker-compose](#1-cara-deployment-menggunakan-docker-compose)
+	- [2. Aristekur Elastic Cluster](#2-aristekur-elastic-cluster)
+		- [2.1. Kibana \& Apps (Layer Pengguna)](#21-kibana--apps-layer-pengguna)
+		- [2.2. HAProxy (Load Balancer)](#22-haproxy-load-balancer)
+		- [2.3. Elastic Clustering (Core Layer)](#23-elastic-clustering-core-layer)
+		- [2.4. Storage 1 \& Storage 2 (Data Layer)](#24-storage-1--storage-2-data-layer)
+	- [3. Level Penerapan Sharding](#3-level-penerapan-sharding)
+	- [4. Distribution Data Skema 2 Node / 2 Server  (1 Share \& 1 Replication)](#4-distribution-data-skema-2-node--2-server--1-share--1-replication)
+		- [4.1 Distribusi Data Write \& Read (Load Balance)](#41-distribusi-data-write--read-load-balance)
+		- [4.2  Auto Fail Over](#42--auto-fail-over)
+		- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic)
+	- [5. Distribution Data Skema 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-skema-2-node--2-server--2-share--1-replication)
+		- [5.1 Distribusi Data Write \& Read (Load Balance)](#51-distribusi-data-write--read-load-balance)
+		- [5.2  Auto Fail Over](#52--auto-fail-over)
+		- [5.3  Skema After Recover](#53--skema-after-recover)
+		- [5.4 Cara Setting Index Shard dan Replication di Elastic](#54-cara-setting-index-shard-dan-replication-di-elastic)
+		- [5.5  Cara Reroute](#55--cara-reroute)
+	- [6. Distribution Data Skema 3 Node / 3 Server  (3 Share \& 1 Replication)](#6-distribution-data-skema-3-node--3-server--3-share--1-replication)
+	- [7. Cek setting shard dan replica pada index:](#7-cek-setting-shard-dan-replica-pada-index)
+	- [8. Cek Distribusi](#8-cek-distribusi)
+	- [9. Penting tidak bisa mengubah jumlah shard](#9-penting-tidak-bisa-mengubah-jumlah-shard)
 
 
 
