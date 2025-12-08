@@ -44,6 +44,7 @@ docker-compose up -d
 ```
 ![Screen Shoot](./ss/docker-1.jpg)
 
+--
 
 ![Screen Shoot](./ss/docker-2.jpg)
 
