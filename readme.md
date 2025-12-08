@@ -10,7 +10,9 @@ In this project, we use a distributed database with Elastic.
 Elastic (Elasticsearch) is a popular distributed search and analytics engine for storing, searching, and analyzing large amounts of data in real-time. Elastic is used for log management, data analysis, full-text search, and observability.
 
 
+## Table of Content
 
+- [Table of Content](#table-of-content)
 - [1. Cara deployment menggunakan docker-compose](#1-cara-deployment-menggunakan-docker-compose)
 - [2. Aristekur Elastic Cluster](#2-aristekur-elastic-cluster)
 	- [2.1. Kibana \& Apps (Layer Pengguna)](#21-kibana--apps-layer-pengguna)
