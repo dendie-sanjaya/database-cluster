@@ -37,6 +37,12 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 	- [7. Check Shard and Replica Settings on Index](#7-check-shard-and-replica-settings-on-index)
 	- [8. Check Distribution](#8-check-distribution)
 	- [9. Important: Cannot Change the Number of Shards](#9-important-cannot-change-the-number-of-shards)
+	- [10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data\_product Index](#10-api-examples-for-adding-editing-viewing-deleting-and-searching-data-in-data_product-index)
+		- [Add Data (Create Document)](#add-data-create-document)
+		- [Edit Data (Update Document)](#edit-data-update-document)
+		- [View Data (Get Document)](#view-data-get-document)
+		- [Delete Data (Delete Document)](#delete-data-delete-document)
+		- [Search Data (Find Documents)](#search-data-find-documents)
 
 
 
@@ -207,3 +213,47 @@ GET /_cat/shards?v
 
 ## 9. Important: Cannot Change the Number of Shards
 If you need to change the number of primary shards (e.g., from 1 to 2 or vice-versa), you must use the Reindexing process. The most common and flexible step is to use Reindexing (creating a new index, then moving all the old data into the new index).
+
+## 10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data_product Index
+
+### Add Data (Create Document)
+```json
+POST /data_product/_doc
+{
+  "name": "Sample Product",
+  "price": 100,
+  "category": "Electronics"
+}
+```
+
+### Edit Data (Update Document)
+```json
+POST /data_product/_update/<document_id>
+{
+  "doc": {
+    "price": 120
+  }
+}
+```
+
+### View Data (Get Document)
+```json
+GET /data_product/_doc/<document_id>
+```
+
+### Delete Data (Delete Document)
+```json
+DELETE /data_product/_doc/<document_id>
+```
+
+### Search Data (Find Documents)
+```json
+GET /data_product/_search
+{
+  "query": {
+    "match": {
+      "name": "Sample"
+    }
+  }
+}
+```
