@@ -180,7 +180,7 @@ PUT /data_logs_transaction
 }
 ```
 
-[Screen Shoot](./ss/kibana-2-share-1-replication.jpg)
+![Screen Shoot](./ss/kibana-2-share-1-replication.jpg)
 
 
 ### 5.5  Cara Reroute 	
@@ -193,7 +193,7 @@ POST /_cluster/reroute?retry_failed=true
 
 ```
 
-[Screen Shoot](./ss/kibana-reroute.jpg)
+![Screen Shoot](./ss/kibana-reroute.jpg)
 
 
 You do not need to explicitly mention the index name whose routing you want to affect when using the POST /_cluster/reroute command for automatic rebalancing or unassigned shard allocation.
@@ -253,6 +253,7 @@ POST /data_product/_doc
   "category": "Electronics"
 }
 ```
+![Screen Shoot](./ss/api-add.jpg)
 
 ### 10.2 Edit Data (Update Document)
 
@@ -264,17 +265,25 @@ POST /data_product/_update/<document_id>
   }
 }
 ```
+![Screen Shoot](./ss/api-update.jpg)
+
+
 
 ### 10.3 View Data (Get Document)
 ```
-GET /data_product/_doc/<document_id>
+GET /data_product/_doc/L1o2BJsBbE10itvpyKcD
 ```
+
+![Screen Shoot](./ss/api-detail.jpg)
+
 
 ### 10.4 Delete Data (Delete Document)
 
 ```
 DELETE /data_product/_doc/<document_id>
 ```
+
+![Screen Shoot](./ss/api-update.jpg)
 
 ### 10.5 Search Data (Find Documents)
 
@@ -288,3 +297,4 @@ GET /data_product/_search
   }
 }
 ```
+![Screen Shoot](./ss/api-search.jpg)
