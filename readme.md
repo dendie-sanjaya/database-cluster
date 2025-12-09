@@ -38,11 +38,11 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 	- [8. Check Distribution](#8-check-distribution)
 	- [9. Important: Cannot Change the Number of Shards](#9-important-cannot-change-the-number-of-shards)
 	- [10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data\_product Index](#10-api-examples-for-adding-editing-viewing-deleting-and-searching-data-in-data_product-index)
-		- [Add Data (Create Document)](#add-data-create-document)
-		- [Edit Data (Update Document)](#edit-data-update-document)
-		- [View Data (Get Document)](#view-data-get-document)
+		- [10.1 Add Data (Create Document)](#101-add-data-create-document)
+		- [10.2 Edit Data (Update Document)](#102-edit-data-update-document)
+		- [10.3 View Data (Get Document)](#103-view-data-get-document)
 		- [Delete Data (Delete Document)](#delete-data-delete-document)
-		- [Search Data (Find Documents)](#search-data-find-documents)
+		- [10.4 Search Data (Find Documents)](#104-search-data-find-documents)
 
 
 
@@ -216,8 +216,9 @@ If you need to change the number of primary shards (e.g., from 1 to 2 or vice-ve
 
 ## 10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data_product Index
 
-### Add Data (Create Document)
-```json
+### 10.1 Add Data (Create Document)
+
+```
 POST /data_product/_doc
 {
   "name": "Sample Product",
@@ -226,8 +227,9 @@ POST /data_product/_doc
 }
 ```
 
-### Edit Data (Update Document)
-```json
+### 10.2 Edit Data (Update Document)
+
+```
 POST /data_product/_update/<document_id>
 {
   "doc": {
@@ -236,18 +238,20 @@ POST /data_product/_update/<document_id>
 }
 ```
 
-### View Data (Get Document)
-```json
+### 10.3 View Data (Get Document)
+```
 GET /data_product/_doc/<document_id>
 ```
 
 ### Delete Data (Delete Document)
-```json
+
+```
 DELETE /data_product/_doc/<document_id>
 ```
 
-### Search Data (Find Documents)
-```json
+### 10.4 Search Data (Find Documents)
+
+```
 GET /data_product/_search
 {
   "query": {
