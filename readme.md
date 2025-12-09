@@ -26,12 +26,12 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 	- [4. Distribution Data Scheme 2 Node / 2 Server  (1 Share \& 1 Replication)](#4-distribution-data-scheme-2-node--2-server--1-share--1-replication)
 		- [4.1 Distribusi Data Write \& Read (Load Balance)](#41-distribusi-data-write--read-load-balance)
 		- [4.2  Auto Fail Over](#42--auto-fail-over)
-		- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic)
+		- [4.3  Setting Index Shard dan Replication di Elastic](#43--setting-index-shard-dan-replication-di-elastic)
 	- [5. Distribution Data Scheme: 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-scheme-2-node--2-server--2-share--1-replication)
 		- [5.1 Distribusi Data Write \& Read (Load Balance)](#51-distribusi-data-write--read-load-balance)
 		- [5.2  Auto Fail Over](#52--auto-fail-over)
 		- [5.3  Skema After Recover](#53--skema-after-recover)
-		- [5.4 Cara Setting Index Shard dan Replication di Elastic](#54-cara-setting-index-shard-dan-replication-di-elastic)
+		- [5.Setting Index Shard dan Replication di Elastic](#5setting-index-shard-dan-replication-di-elastic)
 		- [5.5  Cara Reroute](#55--cara-reroute)
 	- [6. Data Distribution Scheme: 3 Nodes / 3 Servers (3 Shards \& 1 Replication)](#6-data-distribution-scheme-3-nodes--3-servers-3-shards--1-replication)
 	- [7. Check Shard and Replica Settings on Index](#7-check-shard-and-replica-settings-on-index)
@@ -81,12 +81,16 @@ This layer consists of the interfaces and applications that interact with the da
 
 ### 2.2. HAProxy (Load Balancer)
 
+![Screen Shoot](./ss/ha-proxy.jpg)
+
 HAProxy is a software load balancer and proxy used to efficiently distribute traffic to multiple backend servers.
  Role: Acts as a Single Entry Point (gateway).
  Main Task: Receives requests from Kibana/Apps and distributes them evenly across the nodes in the Elasticsearch cluster.
  Advantage: Provides high availability. If an Elasticsearch node fails, HAProxy automatically redirects traffic to the active nodes, ensuring continuous service for users.
 
 ### 2.3. Elastic Clustering (Core Layer)
+
+![Screen Shoot](./ss/elastic-frontend-via-ha-proxy.jpg)
 
 This is the core of the architecture, comprising two or more interconnected nodes:
   Elastic Node 1 & Node 2: Elasticsearch servers handling search and data storage services. They communicate to synchronize cluster status and ensure data replication.
@@ -119,7 +123,7 @@ If the Primary fails or is inaccessible (Storage 1), the system can automaticall
 ![Screen Shoot](./ss/skema-2-node-1-share-1-replication.jpg)
 
  
-### 4.3  Cara Setting Index Shard dan Replication di Elastic
+### 4.3  Setting Index Shard dan Replication di Elastic
 
 To create an index with 1 shard and 1 replica:
 
@@ -134,6 +138,9 @@ PUT /data_product
 	}
 }
 ```
+
+![Screen Shoot](./ss/kibana-1-share-1-replication.jpg)
+
 
 ## 5. Distribution Data Scheme: 2 Node / 2 Server  (2 Share & 1 Replication)
 
@@ -155,13 +162,14 @@ If the Primary on Storage 1 fails, the system can automatically failover to Stor
 After the Storage 1 node is repaired, Storage 1 will hold all replicas, and Storage 2 will hold all primaries.
 
 ![Screen Shoot](./ss/skema-2-node-2-share-1-replication-after-recovery.jpg)
- 
-### 5.4 Cara Setting Index Shard dan Replication di Elastic
+
+
+### 5.Setting Index Shard dan Replication di Elastic
 
 To create an index with 2 shards and 1 replica:
 
 ```
-PUT /data_product
+PUT /data_logs_transaction
 {
 	"settings": {
 		"index": {
@@ -172,6 +180,9 @@ PUT /data_product
 }
 ```
 
+[Screen Shoot](./ss/kibana-2-share-1-replication.jpg)
+
+
 ### 5.5  Cara Reroute 	
 
 Reroute in Elasticsearch is the process of moving or allocating shards (primary and replica copies of your data) between the nodes in a cluster, which facilitates Automatic Rebalancing to ensure data and workload are evenly distributed across all active data nodes for optimal load balancing and performance.
@@ -181,6 +192,9 @@ Reroute in Elasticsearch is the process of moving or allocating shards (primary 
 POST /_cluster/reroute?retry_failed=true
 
 ```
+
+[Screen Shoot](./ss/kibana-reroute.jpg)
+
 
 You do not need to explicitly mention the index name whose routing you want to affect when using the POST /_cluster/reroute command for automatic rebalancing or unassigned shard allocation.
 
@@ -203,6 +217,7 @@ Replication is performed by cross-storing the data among Segment 1, Segment 2, a
 ```
 GET /data_product/_settings
 ```
+![Screen Shoot](./ss/kibana-check-share-replica.jpg)
 
 ## 8. Check Distribution
 
@@ -210,6 +225,18 @@ Untuk melihat distribusi shard dan replica di cluster:
 ```
 GET /_cat/shards?v
 ```
+
+![alt text](./ss/kibana-check-share.jpg)
+
+
+| Column                | Description |
+|-----------------------|-------------|
+| Index Name | The name of the index in the Elasticsearch cluster. All highlighted rows refer to data_logs_transaction. |
+| Status (Status)       | The status of the shard for that index:<br>- **P (Primary):** The main shard responsible for writing new data.<br>- **R (Replica):** The copy shard used for failover and read scalability. |
+| Docs Count            | The number of documents stored in this shard. It shows shards with 0 documents and shards with 1 document. |
+| Store Size            | The storage size used by this shard. They all show 249b (249 bytes), indicating that this index might be new or contain very little data. |
+| IP/Node               | The IP address and the node name (e.g., ea02) where the shard is located. |
+
 
 ## 9. Important: Cannot Change the Number of Shards
 If you need to change the number of primary shards (e.g., from 1 to 2 or vice-versa), you must use the Reindexing process. The most common and flexible step is to use Reindexing (creating a new index, then moving all the old data into the new index).
