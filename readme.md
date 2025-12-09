@@ -17,7 +17,7 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 - [Database Cluster](#database-cluster)
 	- [Table of Content](#table-of-content)
 	- [1. Deployment Method using](#1-deployment-method-using)
-	- [2. Aristekur Elastic Cluster](#2-aristekur-elastic-cluster)
+	- [2. Architectur Elastic Cluster](#2-architectur-elastic-cluster)
 		- [2.1. Kibana \& Apps (User Layer)](#21-kibana--apps-user-layer)
 		- [2.2. HAProxy (Load Balancer)](#22-haproxy-load-balancer)
 		- [2.3. Elastic Clustering (Core Layer)](#23-elastic-clustering-core-layer)
@@ -54,7 +54,7 @@ docker-compose up -d
 ![Screen Shoot](./ss/docker-2.jpg)
 
 
-## 2. Aristekur Elastic Cluster 
+## 2. Architectur Elastic Cluster 
 
 ![Screen Shoot](./design/arsitektur.jpg)
 
@@ -65,7 +65,7 @@ Below are the details of the workflow and its components:
 
 ![Screen Shoot](./ss/kibana.jpg)
 
-![Screen Shoot](./ss/kibana2.jpg)
+![Screen Shoot](./ss/kibana-2.jpg)
 
 Kibana is the data visualization interface running on top of Elasticsearch. It is used to create dashboards, graphs, and visualizations of the data stored in Elastic, facilitating data analysis and monitoring.
 
@@ -101,7 +101,9 @@ Sharding is typically implemented at the table level.
 
 
 ### 4.1 Distribusi Data Write & Read (Load Balance)
+
 Read Scaling: The Load Balancer directs read requests (SELECT) to both Storage 1 and Storage 2 nodes.
+
 Write Distribution: Write requests are always directed to the active Primary on Storage 1, which is then replicated to Storage 2.
 
 
