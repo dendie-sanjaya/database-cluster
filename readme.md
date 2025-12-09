@@ -37,7 +37,7 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 	- [7. Check Shard and Replica Settings on Index](#7-check-shard-and-replica-settings-on-index)
 	- [8. Check Distribution](#8-check-distribution)
 	- [9. Important: Cannot Change the Number of Shards](#9-important-cannot-change-the-number-of-shards)
-	- [10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data\_product Index](#10-api-examples-for-adding-editing-viewing-deleting-and-searching-data-in-data_product-index)
+	- [10. API for Adding, Editing, Viewing, Deleting, Searching](#10-api-for-adding-editing-viewing-deleting-searching)
 		- [10.1 Add Data (Create Document)](#101-add-data-create-document)
 		- [10.2 Edit Data (Update Document)](#102-edit-data-update-document)
 		- [10.3 View Data (Get Document)](#103-view-data-get-document)
@@ -214,7 +214,7 @@ GET /_cat/shards?v
 ## 9. Important: Cannot Change the Number of Shards
 If you need to change the number of primary shards (e.g., from 1 to 2 or vice-versa), you must use the Reindexing process. The most common and flexible step is to use Reindexing (creating a new index, then moving all the old data into the new index).
 
-## 10. API Examples for Adding, Editing, Viewing, Deleting, and Searching Data in data_product Index
+## 10. API for Adding, Editing, Viewing, Deleting, Searching
 
 ### 10.1 Add Data (Create Document)
 
