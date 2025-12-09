@@ -41,8 +41,8 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 		- [10.1 Add Data (Create Document)](#101-add-data-create-document)
 		- [10.2 Edit Data (Update Document)](#102-edit-data-update-document)
 		- [10.3 View Data (Get Document)](#103-view-data-get-document)
-		- [Delete Data (Delete Document)](#delete-data-delete-document)
-		- [10.4 Search Data (Find Documents)](#104-search-data-find-documents)
+		- [10.4 Delete Data (Delete Document)](#104-delete-data-delete-document)
+		- [10.5 Search Data (Find Documents)](#105-search-data-find-documents)
 
 
 
@@ -243,13 +243,13 @@ POST /data_product/_update/<document_id>
 GET /data_product/_doc/<document_id>
 ```
 
-### Delete Data (Delete Document)
+### 10.4 Delete Data (Delete Document)
 
 ```
 DELETE /data_product/_doc/<document_id>
 ```
 
-### 10.4 Search Data (Find Documents)
+### 10.5 Search Data (Find Documents)
 
 ```
 GET /data_product/_search
