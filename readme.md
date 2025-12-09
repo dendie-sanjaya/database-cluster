@@ -16,33 +16,34 @@ Elastic (Elasticsearch) is a popular distributed search and analytics engine for
 
 - [Database Cluster](#database-cluster)
 	- [Table of Content](#table-of-content)
-	- [1. Cara deployment menggunakan docker-compose](#1-cara-deployment-menggunakan-docker-compose)
+	- [1. Deployment Method using](#1-deployment-method-using)
 	- [2. Aristekur Elastic Cluster](#2-aristekur-elastic-cluster)
-		- [2.1. Kibana \& Apps (Layer Pengguna)](#21-kibana--apps-layer-pengguna)
+		- [2.1. Kibana \& Apps (User Layer)](#21-kibana--apps-user-layer)
 		- [2.2. HAProxy (Load Balancer)](#22-haproxy-load-balancer)
 		- [2.3. Elastic Clustering (Core Layer)](#23-elastic-clustering-core-layer)
 		- [2.4. Storage 1 \& Storage 2 (Data Layer)](#24-storage-1--storage-2-data-layer)
 	- [3. Level Penerapan Sharding](#3-level-penerapan-sharding)
-	- [4. Distribution Data Skema 2 Node / 2 Server  (1 Share \& 1 Replication)](#4-distribution-data-skema-2-node--2-server--1-share--1-replication)
+	- [4. Distribution Data Scheme 2 Node / 2 Server  (1 Share \& 1 Replication)](#4-distribution-data-scheme-2-node--2-server--1-share--1-replication)
 		- [4.1 Distribusi Data Write \& Read (Load Balance)](#41-distribusi-data-write--read-load-balance)
 		- [4.2  Auto Fail Over](#42--auto-fail-over)
 		- [4.3  Cara Setting Index Shard dan Replication di Elastic](#43--cara-setting-index-shard-dan-replication-di-elastic)
-	- [5. Distribution Data Skema 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-skema-2-node--2-server--2-share--1-replication)
+	- [5. Distribution Data Scheme: 2 Node / 2 Server  (2 Share \& 1 Replication)](#5-distribution-data-scheme-2-node--2-server--2-share--1-replication)
 		- [5.1 Distribusi Data Write \& Read (Load Balance)](#51-distribusi-data-write--read-load-balance)
 		- [5.2  Auto Fail Over](#52--auto-fail-over)
 		- [5.3  Skema After Recover](#53--skema-after-recover)
 		- [5.4 Cara Setting Index Shard dan Replication di Elastic](#54-cara-setting-index-shard-dan-replication-di-elastic)
 		- [5.5  Cara Reroute](#55--cara-reroute)
-	- [6. Distribution Data Skema 3 Node / 3 Server  (3 Share \& 1 Replication)](#6-distribution-data-skema-3-node--3-server--3-share--1-replication)
-	- [7. Cek setting shard dan replica pada index:](#7-cek-setting-shard-dan-replica-pada-index)
-	- [8. Cek Distribusi](#8-cek-distribusi)
-	- [9. Penting tidak bisa mengubah jumlah shard](#9-penting-tidak-bisa-mengubah-jumlah-shard)
+	- [6. Data Distribution Scheme: 3 Nodes / 3 Servers (3 Shards \& 1 Replication)](#6-data-distribution-scheme-3-nodes--3-servers-3-shards--1-replication)
+	- [7. Check Shard and Replica Settings on Index](#7-check-shard-and-replica-settings-on-index)
+	- [8. Check Distribution](#8-check-distribution)
+	- [9. Important: Cannot Change the Number of Shards](#9-important-cannot-change-the-number-of-shards)
 
 
 
-## 1. Cara deployment menggunakan docker-compose
+## 1. Deployment Method using
 
-Cara deployment menggunakan docker-compose
+The deployment is executed using the docker-compose command:
+
 ```
 docker-compose up -d
 ```
@@ -58,62 +59,62 @@ docker-compose up -d
 ![Screen Shoot](./design/arsitektur.jpg)
 
 
-Berikut adalah rincian alur kerja dan komponennya:
+Below are the details of the workflow and its components:
 
-### 2.1. Kibana & Apps (Layer Pengguna)
+### 2.1. Kibana & Apps (User Layer)
 
 ![Screen Shoot](./ss/kibana.jpg)
 
 ![Screen Shoot](./ss/kibana2.jpg)
 
-Kibana adalah antarmuka visualisasi data yang berjalan di atas Elasticsearch. Kibana digunakan untuk membuat dashboard, grafik, dan visualisasi data yang tersimpan di Elastic, sehingga memudahkan analisis dan monitoring data.
+Kibana is the data visualization interface running on top of Elasticsearch. It is used to create dashboards, graphs, and visualizations of the data stored in Elastic, facilitating data analysis and monitoring.
 
-Ini adalah antarmuka atau aplikasi yang berinteraksi dengan data.
-Kibana: Digunakan untuk visualisasi data, pembuatan dasbor, dan manajemen indeks Elasticsearch.
-Apps: Merujuk pada aplikasi pihak ketiga atau buatan sendiri yang mengirimkan kueri (query) untuk mengambil atau memasukkan data ke dalam sistem.
+This layer consists of the interfaces and applications that interact with the data:
+  Kibana: Used for data visualization, dashboard creation, and managing Elasticsearch indices.
+ Apps: Refers to third-party or custom applications that submit queries to retrieve or insert data into the system.
 
 ### 2.2. HAProxy (Load Balancer)
 
-HAProxy adalah software load balancer dan proxy yang digunakan untuk mendistribusikan trafik ke beberapa server backend secara efisien. 
-
-HAProxy bertindak sebagai pintu gerbang tunggal (Entry Point).
-Tugas Utama: Menerima permintaan dari Kibana/Apps dan mendistribusikannya secara merata ke node-node yang ada di dalam klaster Elasticsearch.
-Keuntungan: Jika salah satu node Elasticsearch mati, HAProxy akan secara otomatis mengalihkan trafik ke node yang masih aktif, sehingga sistem tetap berjalan tanpa hambatan bagi pengguna.
+HAProxy is a software load balancer and proxy used to efficiently distribute traffic to multiple backend servers.
+ Role: Acts as a Single Entry Point (gateway).
+ Main Task: Receives requests from Kibana/Apps and distributes them evenly across the nodes in the Elasticsearch cluster.
+ Advantage: Provides high availability. If an Elasticsearch node fails, HAProxy automatically redirects traffic to the active nodes, ensuring continuous service for users.
 
 ### 2.3. Elastic Clustering (Core Layer)
-Ini adalah inti dari arsitektur, yang terdiri dari dua node atau lebih yang saling terhubung:
-Elastic Node 1 & Node 2: Dua server Elasticsearch yang menjalankan layanan pencarian dan penyimpanan data. Mereka saling berkomunikasi (ditunjukkan oleh panah vertikal) untuk menyinkronkan status klaster dan memastikan replikasi data terjadi.
-Dashed Box (Kotak Putus-putus): Menandakan bahwa kedua node ini berada dalam satu kesatuan logis yang disebut Cluster.
+
+This is the core of the architecture, comprising two or more interconnected nodes:
+  Elastic Node 1 & Node 2: Elasticsearch servers handling search and data storage services. They communicate to synchronize cluster status and ensure data replication.
+  Dashed Box: Indicates that these nodes form a single logical unit called a Cluster.
 
 ### 2.4. Storage 1 & Storage 2 (Data Layer)
-Masing-masing node memiliki media penyimpanannya sendiri.
-Dalam konfigurasi klaster yang baik, data biasanya direplikasi (disalin) antar storage. Jika Storage 1 rusak, data tetap aman karena ada salinannya di Storage 2 yang diakses melalui Node 2.
-
+Each node has its own storage media. In a proper cluster configuration, data is typically replicated (copied) across storage units. If Storage 1 fails, the data is safe because a copy exists in Storage 2, accessible via Node 2.
 
 ## 3. Level Penerapan Sharding 
-Penerapan sharding pada umum nya berada di level table
-Level Tabel (Paling Sering)	Membagi baris pada satu tabel yang sangat besar dan mendistribusikan ke banyak storage 
-Meningkatkan skalabilitas penulisan (write) dan mengurangi beban I/O pada satu server.
 
-## 4. Distribution Data Skema 2 Node / 2 Server  (1 Share & 1 Replication)
+Sharding is typically implemented at the table level.
+    Table Level (Most Common): Divides rows of a very large table and distributes them across multiple storage units.
+    Goal: Increases write scalability and reduces the I/O load on any single server.
+
+## 4. Distribution Data Scheme 2 Node / 2 Server  (1 Share & 1 Replication)
 
 ![Screen Shoot](./ss/skema-2-node-1-share-1-replication-after-recovery.jpg)
 
-Berikut ini adalah contoh beberapa skema Distribusi Database  
 
 ### 4.1 Distribusi Data Write & Read (Load Balance)
-Distribusi Beban Baca (Read Scaling): Load Balancer mengarahkan permintaan baca (SELECT) ke semua node Storage 1 dan Storage 2 
-Distribisi  penulisan (write) selalu diarahkan ke satu ke Primary yang aktif yaitu di storage 1 yang kemudian di replikasi ke storage 2
+Read Scaling: The Load Balancer directs read requests (SELECT) to both Storage 1 and Storage 2 nodes.
+Write Distribution: Write requests are always directed to the active Primary on Storage 1, which is then replicated to Storage 2.
+
 
 ### 4.2  Auto Fail Over  
-jika salah satu Primary gagal diakses atau rusak (storage 1), sistem dapat beralih (failover) secara otomatis ke instans Replika (di secara otomatis di promosikan menjadi Primary) lain yang merupakan salinan lengkapnya, sehingga data tetap dapat diakses tanpa gangguan.
+If the Primary fails or is inaccessible (Storage 1), the system can automatically failover to the Replica instance (which is automatically promoted to Primary), ensuring data remains accessible without interruption.
 
 ![Screen Shoot](./ss/skema-2-node-1-share-1-replication.jpg)
 
  
 ### 4.3  Cara Setting Index Shard dan Replication di Elastic
 
-Untuk membuat index dengan 1 shard dan 1 replica:
+To create an index with 1 shard and 1 replica:
+
 ```
 PUT /data_product
 {
@@ -126,26 +127,31 @@ PUT /data_product
 }
 ```
 
-## 5. Distribution Data Skema 2 Node / 2 Server  (2 Share & 1 Replication)
+## 5. Distribution Data Scheme: 2 Node / 2 Server  (2 Share & 1 Replication)
 
 ![Screen Shoot](./ss/skema-2-node-2-share-1-replication.jpg)
 
 ### 5.1 Distribusi Data Write & Read (Load Balance)
-Distribusi Beban Baca (Read Scaling): Load Balancer mengarahkan permintaan baca (SELECT) ke semua node Storage 1 dan Storage 2 
-Distribusi  penulisan (write) terbagai dua,   sebagain ke Primary di storage 1 sebanyak 50%  data sebagai segmen 1 data,  dan sebagain  ke Primary di storage 2 sebanyak 50% sebagai segemen 2 data, tujuan dari pemisahan untuk meningkat load balacing atau scaling read data menjadi lebih ringan dan cepat.  
-Kemudian setiap data yg ada di Segeman 1 dan dan Segmen 2 di lakukan replikasi dengan cara di silang peyimpanan datanya  
+Read Scaling: The Load Balancer directs read requests (SELECT) to all nodes (Storage 1 and Storage 2).
+
+Write Distribution: Write distribution is split:
+    50% goes to the Primary on Storage 1 (segment 1 data).
+    50% goes to the Primary on Storage 2 (segment 2 data).
+    Goal: To enhance load balancing and make read scaling lighter and faster.
+Replication is performed by cross-storing the data between Segment 1 and Segment 2.  
 
 ### 5.2  Auto Fail Over  
-jika salah satu Primary gagal diakses atau rusak (storage 1), sistem dapat beralih (failover) secara otomatis ke (storage 2) dan Replika (di secara otomatis di promosikan menjadi Primary) yang merupakan salinan lengkapnya darn storage 2, sehingga data tetap dapat diakses tanpa gangguan
+If the Primary on Storage 1 fails, the system can automatically failover to Storage 2 (and the Replica which is automatically promoted to Primary), ensuring data access.
 
 ### 5.3  Skema After Recover 
-Apabila node storage 1 sudah di perbaiki, maka storage 1 akan menjadi semua eplikasi dan stroage 2 akan menjadi primary semua
+After the Storage 1 node is repaired, Storage 1 will hold all replicas, and Storage 2 will hold all primaries.
 
 ![Screen Shoot](./ss/skema-2-node-2-share-1-replication-after-recovery.jpg)
  
 ### 5.4 Cara Setting Index Shard dan Replication di Elastic
 
-Untuk membuat index dengan 2 shard dan 1 replica:
+To create an index with 2 shards and 1 replica:
+
 ```
 PUT /data_product
 {
@@ -158,44 +164,44 @@ PUT /data_product
 }
 ```
 
-### 5.5  Cara Reroute 
+### 5.5  Cara Reroute 	
 
-Untuk mengembalikan route agar ternjadi load balance:
-```
-PUT /data_product
-{
-	"settings": {
-		"index": {
-			"number_of_shards": 1,
-			"number_of_replicas": 1
-		}
-	}![Screen Shoot](./ss/skema-2-node-1-share-1-replication.jpg)
-}
+Reroute in Elasticsearch is the process of moving or allocating shards (primary and replica copies of your data) between the nodes in a cluster, which facilitates Automatic Rebalancing to ensure data and workload are evenly distributed across all active data nodes for optimal load balancing and performance.
+
 ```
 
+POST /_cluster/reroute?retry_failed=true
 
-## 6. Distribution Data Skema 3 Node / 3 Server  (3 Share & 1 Replication)
-Distribusi Beban Baca (Read Scaling): Load Balancer mengarahkan permintaan baca (SELECT) ke semua node Storage 1 dan Storage 2 dan  Storage 3
-Distribusi  penulisan (write) terbagai tiga,  ke Primary di storage 1 sebanyak 1/3  data sebagai segmen 1 data,  dan sebagain  ke Primary di storage 2 sebanyak 1/3 sebagai segemen 2 data, dan sebagain  ke Primary di storage 3 sebanyak 1/3 sebagai segemen 3. 
-Tujuan dari pemisahan untuk meningkat load balacing atau scaling read data menjadi lebih ringan dan cepat.  
-Kemudian setiap data yg ada di Segeman 1, Segmen 2, Segmen 3 di lakukan replikasi dengan cara di silang peyimpanan datanya  
+```
+
+You do not need to explicitly mention the index name whose routing you want to affect when using the POST /_cluster/reroute command for automatic rebalancing or unassigned shard allocation.
+
+
+## 6. Data Distribution Scheme: 3 Nodes / 3 Servers (3 Shards & 1 Replication)
+
+Read Scaling: The Load Balancer directs read requests (SELECT) to all nodes (Storage 1, Storage 2, and Storage 3).
+
+Write Distribution: Write distribution is split into three:
+    1/3 of the data goes to the Primary on Storage 1 (segment 1).
+    1/3 goes to the Primary on Storage 2 (segment 2).
+    1/3 goes to the Primary on Storage 3 (segment 3).
+    Goal: To increase load balancing and make read scaling lighter and faster.
+Replication is performed by cross-storing the data among Segment 1, Segment 2, and Segment 3.
 
 ![Screen Shoot](./ss/skema-3-node-3-share-1-replication.jpg)
 
-## 7. Cek setting shard dan replica pada index:
+## 7. Check Shard and Replica Settings on Index
 
 ```
 GET /data_product/_settings
 ```
 
-## 8. Cek Distribusi
+## 8. Check Distribution
 
 Untuk melihat distribusi shard dan replica di cluster:
 ```
 GET /_cat/shards?v
 ```
 
-## 9. Penting tidak bisa mengubah jumlah shard
-Jika perlu mengubah jumlah primary shards (misalnya, dari 1 ke 2 atau sebalik), harus menggunakan proses Reindexing 
-Langkah yang paling umum dan fleksibel adalah menggunakan Reindexing (membuat index baru, lalu memindahkan semua data lama ke index baru tersebut).
-
+## 9. Important: Cannot Change the Number of Shards
+If you need to change the number of primary shards (e.g., from 1 to 2 or vice-versa), you must use the Reindexing process. The most common and flexible step is to use Reindexing (creating a new index, then moving all the old data into the new index).
